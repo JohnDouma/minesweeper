@@ -25,7 +25,7 @@ public class MinesweeperServer {
     private static final int DEFAULT_SIZE = 10;
     
     private static final String HELP_MESSAGE = "help, bye, look, dig <x> <y>, flag <x> <y>, deflag <x> <y>";
-
+    
     /** Socket for receiving incoming connections. */
     private final ServerSocket serverSocket;
     /**
@@ -34,7 +34,9 @@ public class MinesweeperServer {
     private final boolean debug;
     
     private static Board board;
-
+    private static String welcomeMessage;
+    private static int numPlayers = 0;
+    
     // TODO: Abstraction function, rep invariant, rep exposure
 
     /**
@@ -93,12 +95,14 @@ public class MinesweeperServer {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
         try {
+            out.println(welcomeMessage);
             for (String line = in.readLine(); line != null; line = in.readLine()) {
                 String output = handleRequest(line);
                 if (output != null) {
-                    // TODO: Consider improving spec of handleRequest to avoid
-                    // use of null
                     out.println(output);
+                    if (output.equals("Goodbye") || output.equals("BOOM!") && !debug) {
+                        break;
+                    }
                 }
             }
         } finally {
@@ -123,26 +127,26 @@ public class MinesweeperServer {
         }
         String[] tokens = input.split(" ");
         if (tokens[0].equals("look")) {
-            // 'look' request
-            // TODO Problem 5
+            return board.toString();
         } else if (tokens[0].equals("help")) {
-            // 'help' request
-            // TODO Problem 5
+            return HELP_MESSAGE;
         } else if (tokens[0].equals("bye")) {
-            // 'bye' request
-            // TODO Problem 5
+            return "Goodbye";
         } else {
             int x = Integer.parseInt(tokens[1]);
             int y = Integer.parseInt(tokens[2]);
             if (tokens[0].equals("dig")) {
-                // 'dig x y' request
-                // TODO Problem 5
+                boolean hasBomb = board.dig(x, y);
+                if (hasBomb) {
+                    return "BOOM!";
+                }
+                return board.toString();
             } else if (tokens[0].equals("flag")) {
-                // 'flag x y' request
-                // TODO Problem 5
+                board.flag(x, y);
+                return board.toString();
             } else if (tokens[0].equals("deflag")) {
-                // 'deflag x y' request
-                // TODO Problem 5
+                board.deflag(x, y);
+                return board.toString();
             }
         }
         // TODO: Should never get here, make sure to return in each of the cases
@@ -301,6 +305,7 @@ public class MinesweeperServer {
         } else {
             board = new Board(sizeY, sizeX);
         }
+        welcomeMessage = String.format("Welcome to Minesweeper. Players:  %d  including you. Board: %d  columns by  %d  rows. Type 'help' for help.", 1, sizeX, sizeY);
         server.serve();
     }
 }
