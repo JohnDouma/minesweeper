@@ -3,6 +3,11 @@
  */
 package minesweeper;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +30,7 @@ public class Board {
     // Thread Safety Argument: All public non-constructor methods are
     // synchronized
 
-    private enum State {
+    public enum State {
         UNTOUCHED, DUG, FLAGGED
     };
 
@@ -106,6 +111,51 @@ public class Board {
         }
 
         checkRep();
+    }
+    
+    public Board(File file) {
+        if (!file.exists()) {
+            throw new RuntimeException(String.format("%s does not exist", file));
+        }
+        
+        String line;
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            line = reader.readLine();
+            String[] tokens = line.split(" ");
+            if (tokens.length != 2) {
+                throw new RuntimeException(String.format("Invalid board file - line 1 %s", line));
+            }
+            
+            int rows = Integer.parseInt(tokens[1]);
+            int cols = Integer.parseInt(tokens[0]);
+            
+            grid = new Square[rows][cols];
+            for (int row = 0; row < rows; row++) {
+                line = reader.readLine();
+                String[] columns = line.split(" ");
+                if (columns.length != cols) {
+                    throw new RuntimeException(String.format("Line %d is inconsistent with number of columns specified", row+1));
+                }
+                for (int col = 0; col < cols; col++) {
+                    grid[row][col] = new Square();
+                    if (Integer.parseInt(columns[col]) == 1) {
+                        grid[row][col].hasBomb = true;
+                    }
+                }
+            }
+            
+            line = reader.readLine();
+            if (line != null && !line.equals("")) {
+                throw new RuntimeException(String.format("File %s contains more lines than specified on line 1", file));
+            }
+            
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        } catch (IOException ioe) {
+            throw new RuntimeException();
+        }
     }
 
     /**

@@ -23,6 +23,8 @@ public class MinesweeperServer {
     private static final int MAXIMUM_PORT = 65535;
     /** Default square board size. */
     private static final int DEFAULT_SIZE = 10;
+    
+    private static final String HELP_MESSAGE = "help, bye, look, dig <x> <y>, flag <x> <y>, deflag <x> <y>";
 
     /** Socket for receiving incoming connections. */
     private final ServerSocket serverSocket;
@@ -30,6 +32,8 @@ public class MinesweeperServer {
      * True if the server should *not* disconnect a client after a BOOM message.
      */
     private final boolean debug;
+    
+    private static Board board;
 
     // TODO: Abstraction function, rep invariant, rep exposure
 
@@ -115,8 +119,7 @@ public class MinesweeperServer {
     private String handleRequest(String input) {
         String regex = "(look)|(help)|(bye)|" + "(dig -?\\d+ -?\\d+)|(flag -?\\d+ -?\\d+)|(deflag -?\\d+ -?\\d+)";
         if (!input.matches(regex)) {
-            // invalid input
-            // TODO Problem 5
+            return HELP_MESSAGE;
         }
         String[] tokens = input.split(" ");
         if (tokens[0].equals("look")) {
@@ -292,6 +295,12 @@ public class MinesweeperServer {
         // TODO: Continue implementation here in problem 4
 
         MinesweeperServer server = new MinesweeperServer(port, debug);
+        if (file.isPresent()) {
+            File boardFile = file.get();
+            board = new Board(boardFile);
+        } else {
+            board = new Board(sizeY, sizeX);
+        }
         server.serve();
     }
 }

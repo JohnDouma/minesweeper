@@ -3,6 +3,8 @@
  */
 package minesweeper;
 
+import java.io.File;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,13 +22,9 @@ public class BoardTest {
     
     // TODO: Tests
     
-    @Test
-    public void testToString() {
-        Board board = new Board(5,7);
-        board.dig(2, 1);
-        board.flag(4, 2);
-        System.out.print(board);
-        Assert.assertTrue(true);
+    @Test(expected=RuntimeException.class)
+    public void testConstructBoardWithNonexistantFile() {
+        Board board = new Board(new File("doesntexist.txt"));   
     }
     
 }
