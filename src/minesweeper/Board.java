@@ -4,7 +4,7 @@
 package minesweeper;
 
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.List;
 
 /**
  * TODO: Specification
@@ -128,6 +128,7 @@ public class Board {
                 grid[y][x].hasBomb = false;
             }
             checkRep();
+            digBomblessNeighbors(x, y);
         }
 
         return retval;
@@ -181,12 +182,12 @@ public class Board {
      * of neighboring bombs.
      */
     private void checkRep() {
-        Queue<Pair> queue;
+        List<Pair> list;
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[row].length; col++) {
                 int numBombs = 0;
-                queue = generateNeighbors(col, row);
-                for (Pair coord : queue) {
+                list = generateNeighbors(col, row);
+                for (Pair coord : list) {
                     if (grid[coord.y][coord.x].hasBomb) {
                         numBombs++;
                     }
@@ -205,35 +206,56 @@ public class Board {
     }
 
     /*
-     * Returns a queue of pairs of grid indexes
+     * Returns a list of pairs of grid indexes
      */
-    private Queue<Pair> generateNeighbors(int x, int y) {
-        Queue<Pair> queue = new LinkedList<Pair>();
+    private List<Pair> generateNeighbors(int x, int y) {
+        List<Pair> list = new LinkedList<Pair>();
         if (x > 0) {
-            queue.add(new Pair(x - 1, y));
+            list.add(new Pair(x - 1, y));
             if (y > 0)
-                queue.add(new Pair(x - 1, y - 1));
+                list.add(new Pair(x - 1, y - 1));
             if (y < grid.length - 1)
-                queue.add(new Pair(x - 1, y + 1));
+                list.add(new Pair(x - 1, y + 1));
         }
 
         if (x < grid[0].length - 1) {
-            queue.add(new Pair(x + 1, y));
+            list.add(new Pair(x + 1, y));
             if (y > 0)
-                queue.add(new Pair(x + 1, y - 1));
+                list.add(new Pair(x + 1, y - 1));
             if (y < grid.length - 1)
-                queue.add(new Pair(x + 1, y + 1));
+                list.add(new Pair(x + 1, y + 1));
         }
 
         if (y > 0) {
-            queue.add(new Pair(x, y - 1));
+            list.add(new Pair(x, y - 1));
         }
 
         if (y < grid.length - 1) {
-            queue.add(new Pair(x, y + 1));
+            list.add(new Pair(x, y + 1));
         }
 
-        return queue;
+        return list;
     }
 
+    /*
+     * If the square at grid[y][x] has no neighbors with bombs, set
+     * neighbors' states to dug if untouched and recursively do
+     * the same to each of their neighbors.
+     */
+    private void digBomblessNeighbors(int x, int y) {
+        if (grid[y][x].neighborsWithBombs > 0) return;
+        
+        List<Pair> neighbors = generateNeighbors(x, y);
+        while (!neighbors.isEmpty()) {
+            Pair coord = neighbors.remove(0);
+            Square square = grid[coord.y][coord.x];
+            if (square.state == State.UNTOUCHED) {
+                square.state = State.DUG;
+                if (square.neighborsWithBombs == 0) {
+                    neighbors.addAll(generateNeighbors(coord.x, coord.y));
+                }
+            }
+        }
+        
+    }
 }
