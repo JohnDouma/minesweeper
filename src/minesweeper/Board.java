@@ -71,6 +71,7 @@ public class Board {
                 break;
             case FLAGGED:
                 retval = "F";
+                break;
             case UNTOUCHED:
                 retval = "-";
             }
@@ -212,15 +213,15 @@ public class Board {
             queue.add(new Pair(x - 1, y));
             if (y > 0)
                 queue.add(new Pair(x - 1, y - 1));
-            if (y < grid[0].length - 1)
+            if (y < grid.length - 1)
                 queue.add(new Pair(x - 1, y + 1));
         }
 
-        if (x < grid.length - 1) {
+        if (x < grid[0].length - 1) {
             queue.add(new Pair(x + 1, y));
             if (y > 0)
                 queue.add(new Pair(x + 1, y - 1));
-            if (y < grid[0].length - 1)
+            if (y < grid.length - 1)
                 queue.add(new Pair(x + 1, y + 1));
         }
 
@@ -228,7 +229,7 @@ public class Board {
             queue.add(new Pair(x, y - 1));
         }
 
-        if (y < grid[0].length - 1) {
+        if (y < grid.length - 1) {
             queue.add(new Pair(x, y + 1));
         }
 

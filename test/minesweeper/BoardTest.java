@@ -22,7 +22,9 @@ public class BoardTest {
     
     @Test
     public void testToString() {
-        Board board = new Board(3,5);
+        Board board = new Board(5,7);
+        board.dig(2, 1);
+        board.flag(4, 2);
         System.out.print(board);
         Assert.assertTrue(true);
     }
