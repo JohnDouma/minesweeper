@@ -63,7 +63,7 @@ public class Board {
 
         public void deflag() {
             if (state == State.FLAGGED) {
-                state = State.DUG;
+                state = State.UNTOUCHED;
             }
         }
 
