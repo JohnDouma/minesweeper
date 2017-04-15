@@ -3,6 +3,7 @@
  */
 package minesweeper;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -18,5 +19,12 @@ public class BoardTest {
     }
     
     // TODO: Tests
+    
+    @Test
+    public void testToString() {
+        Board board = new Board(3,5);
+        System.out.print(board);
+        Assert.assertTrue(true);
+    }
     
 }
