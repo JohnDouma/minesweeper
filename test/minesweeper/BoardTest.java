@@ -34,9 +34,19 @@ public class BoardTest {
     }
     
     @Test
-    public void testDig() {
+    public void testDigWithOneSquare() {
         Board board = new Board(1, 1);
         board.dig(0, 0);
         Assert.assertFalse(board.hasBomb(0,0));
+    }
+    
+    @Test
+    public void testBoardInitialization() {
+        Board board = new Board(10, 10);
+        for (int row = 0; row < 10; row++) {
+            for (int col = 0; col < 10; col++) {
+                Assert.assertEquals(Board.State.UNTOUCHED, board.getState(col, row));
+            }
+        }
     }
 }
