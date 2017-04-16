@@ -27,4 +27,16 @@ public class BoardTest {
         Board board = new Board(new File("doesntexist.txt"));   
     }
     
+    @Test(expected=IndexOutOfBoundsException.class)
+    public void testDigInvalidSquare() {
+        Board board = new Board(3, 4);
+        board.hasBomb(3, 4);
+    }
+    
+    @Test
+    public void testDig() {
+        Board board = new Board(1, 1);
+        board.dig(0, 0);
+        Assert.assertFalse(board.hasBomb(0,0));
+    }
 }
