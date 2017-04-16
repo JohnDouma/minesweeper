@@ -49,4 +49,39 @@ public class BoardTest {
             }
         }
     }
+    
+    @Test
+    public void testFlag() {
+        Board board = new Board(5, 5);
+        Assert.assertEquals(Board.State.UNTOUCHED, board.getState(3, 3));
+        board.flag(3, 3);
+        Assert.assertEquals(Board.State.FLAGGED, board.getState(3, 3));
+    }
+    
+    @Test
+    public void testFlagDugSquare() {
+        Board board = new Board(5, 5);
+        Assert.assertEquals(Board.State.UNTOUCHED, board.getState(3, 3));
+        board.dig(3, 3);
+        board.flag(3, 3);
+        Assert.assertEquals(Board.State.DUG, board.getState(3, 3));
+    }
+    
+    @Test
+    public void testDeflagFlaggedSquare() {
+        Board board = new Board(5, 5);
+        Assert.assertEquals(Board.State.UNTOUCHED, board.getState(3, 3));
+        board.flag(3, 3);
+        Assert.assertEquals(Board.State.FLAGGED, board.getState(3, 3));
+        board.deflag(3, 3);
+        Assert.assertEquals(Board.State.UNTOUCHED, board.getState(3, 3));
+    }
+    
+    @Test
+    public void testDeflagUnflaggedSquare() {
+        Board board = new Board(5, 5);
+        Assert.assertEquals(Board.State.UNTOUCHED, board.getState(3, 3));
+        board.deflag(3, 3);
+        Assert.assertEquals(Board.State.UNTOUCHED, board.getState(3, 3));
+    }
 }
