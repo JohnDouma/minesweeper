@@ -72,7 +72,7 @@ public class Board {
             String retval = null;
             switch (state) {
             case DUG:
-                retval = (neighborsWithBombs == 0) ? "" : Integer.toString(neighborsWithBombs);
+                retval = (neighborsWithBombs == 0) ? " " : Integer.toString(neighborsWithBombs);
                 break;
             case FLAGGED:
                 retval = "F";
@@ -112,12 +112,12 @@ public class Board {
 
         checkRep();
     }
-    
+
     public Board(File file) {
         if (!file.exists()) {
             throw new RuntimeException(String.format("%s does not exist", file));
         }
-        
+
         String line;
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -126,16 +126,17 @@ public class Board {
             if (tokens.length != 2) {
                 throw new RuntimeException(String.format("Invalid board file - line 1 %s", line));
             }
-            
+
             int rows = Integer.parseInt(tokens[1]);
             int cols = Integer.parseInt(tokens[0]);
-            
+
             grid = new Square[rows][cols];
             for (int row = 0; row < rows; row++) {
                 line = reader.readLine();
                 String[] columns = line.split(" ");
                 if (columns.length != cols) {
-                    throw new RuntimeException(String.format("Line %d is inconsistent with number of columns specified", row+1));
+                    throw new RuntimeException(
+                            String.format("Line %d is inconsistent with number of columns specified", row + 1));
                 }
                 for (int col = 0; col < cols; col++) {
                     grid[row][col] = new Square();
@@ -144,12 +145,12 @@ public class Board {
                     }
                 }
             }
-            
+
             line = reader.readLine();
             if (line != null && !line.equals("")) {
                 throw new RuntimeException(String.format("File %s contains more lines than specified on line 1", file));
             }
-            
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             throw new RuntimeException();
@@ -221,7 +222,9 @@ public class Board {
                 sb.append(" ");
             }
             sb.append(grid[row][grid[row].length - 1]);
-            sb.append(System.lineSeparator());
+            if (row < grid.length - 1) {
+                sb.append(System.lineSeparator());
+            }
         }
 
         return sb.toString();
@@ -288,13 +291,14 @@ public class Board {
     }
 
     /*
-     * If the square at grid[y][x] has no neighbors with bombs, set
-     * neighbors' states to dug if untouched and recursively do
-     * the same to each of their neighbors.
+     * If the square at grid[y][x] has no neighbors with bombs, set neighbors'
+     * states to dug if untouched and recursively do the same to each of their
+     * neighbors.
      */
     private void digBomblessNeighbors(int x, int y) {
-        if (grid[y][x].neighborsWithBombs > 0) return;
-        
+        if (grid[y][x].neighborsWithBombs > 0)
+            return;
+
         List<Pair> neighbors = generateNeighbors(x, y);
         while (!neighbors.isEmpty()) {
             Pair coord = neighbors.remove(0);
@@ -306,6 +310,6 @@ public class Board {
                 }
             }
         }
-        
+
     }
 }
