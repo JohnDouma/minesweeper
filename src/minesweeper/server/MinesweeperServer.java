@@ -36,6 +36,8 @@ public class MinesweeperServer {
     private static Board board;
     private static String welcomeMessage;
     private static int numPlayers = 0;
+    private static int numRows = 0;
+    private static int numCols = 0;
     
     // TODO: Abstraction function, rep invariant, rep exposure
 
@@ -95,6 +97,7 @@ public class MinesweeperServer {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 
         try {
+            welcomeMessage = String.format("Welcome to Minesweeper. Players: %d including you. Board: %d columns by %d rows. Type 'help' for help.", ++numPlayers, numCols, numRows);
             out.println(welcomeMessage);
             for (String line = in.readLine(); line != null; line = in.readLine()) {
                 String output = handleRequest(line);
@@ -305,7 +308,8 @@ public class MinesweeperServer {
         } else {
             board = new Board(sizeY, sizeX);
         }
-        welcomeMessage = String.format("Welcome to Minesweeper. Players:  %d  including you. Board: %d  columns by  %d  rows. Type 'help' for help.", 1, sizeX, sizeY);
+        numRows = sizeY;
+        numCols = sizeX;
         server.serve();
     }
 }
