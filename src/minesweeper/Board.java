@@ -213,6 +213,35 @@ public class Board {
         }
     }
 
+    /**
+     * Gets state of square on board
+     * 
+     * @param x
+     *            col of grid
+     * @param y
+     *            row of grid
+     * 
+     * @return state of grid if valid location
+     * @throws IndexOutOfBoundException if invalid grid location
+     */
+    public synchronized State getState(int x, int y) {
+        return grid[y][x].state;
+    }
+    
+    /**
+     * 
+     * @param x
+     *            col of grid
+     * @param y
+     *            row of grid
+     * 
+     * @return true if square at this location has a bomb, false otherwise
+     * @throws IndexOutOfBoundException if invalid grid location
+     */
+    public synchronized boolean hasBomb(int x, int y) {
+        return grid[y][x].hasBomb;
+    }
+
     @Override
     public synchronized String toString() {
         StringBuffer sb = new StringBuffer();
